@@ -1,3 +1,4 @@
+import { sendMagicLink } from '#/components/email/index.tsx'
 import { getDb } from '#/db/index.server.ts'
 import {
   accountTable,
@@ -55,6 +56,13 @@ export const auth = betterAuth({
       expiresIn: 5 * 60,
       async sendMagicLink({ email, url }) {
         if (serverEnv.APP_ENV === 'production') {
+          sendMagicLink({ to: email, url }).catch((e) => {
+            const errorMessage = e instanceof Error ? e.message : String(e)
+
+            writeLogMessage({
+              content: `=== MAGIC LINK ===\n[error] ${errorMessage}\n`,
+            })
+          })
         } else {
           await writeLogMessage({
             content: `=== MAGIC LINK ===\n[email] ${email}\n[url]\n${url}\n`,
