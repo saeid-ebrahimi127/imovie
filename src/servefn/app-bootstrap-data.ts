@@ -10,14 +10,14 @@ export const getAppBootstrapData = createServerFn({ method: 'GET' }).handler(
       getFlashMessage(),
     ])
 
-    let user: (Pick<User, 'name'> & { role: UserRole }) | null = null
+    let user: (Pick<User, 'name' | 'image'> & { role: UserRole }) | null = null
 
     if (betterAuthSession) {
       const {
-        user: { name, ...userRest },
+        user: { name, image, ...userRest },
       } = betterAuthSession
 
-      user = { name, role: userRest.role as UserRole }
+      user = { name, image, role: userRest.role as UserRole }
     }
 
     return { user, flashMessage }
