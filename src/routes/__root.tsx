@@ -59,7 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (flashMessage) {
-      toast[flashMessage.type](flashMessage.text)
+      toast[flashMessage.type](flashMessage.message)
     }
   }, [flashMessage])
 

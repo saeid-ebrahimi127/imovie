@@ -6,7 +6,7 @@ export const getBetterAuthSession = () => {
   return auth.api.getSession({ headers: getRequestHeaders() })
 }
 
-type FlashMessage = { type: 'error' | 'success'; text: string }
+type FlashMessage = { type: 'error' | 'success'; message: string }
 
 const getAppSession = () => {
   return useSession<{ flashMessage: FlashMessage }>({
@@ -33,7 +33,7 @@ export const getFlashMessage = async () => {
 
   const { flashMessage } = appSession.data
 
-  appSession.update({ flashMessage: undefined })
+  await appSession.update({ flashMessage: undefined })
 
   return flashMessage
 }

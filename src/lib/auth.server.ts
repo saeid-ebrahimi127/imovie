@@ -6,8 +6,17 @@ import {
   verificationTable,
 } from '#/db/schema/auth-schema.server.ts'
 import { serverEnv } from '#/lib/env/env.server.ts'
+import { errorMessage, successMessage } from '#/lib/message.ts'
+import type { ErrorMessageKey, SuccessMessageKey } from '#/lib/message.ts'
+import { getRedisClient } from '#/lib/redis.server.ts'
+import { setFlashMessage } from '#/lib/session.server.ts'
+import { writeLogMessage } from '#/lib/utils.server.ts'
+import { redisStorage } from '@better-auth/redis-storage'
 import { betterAuth } from 'better-auth'
+import { localization } from 'better-auth-localization'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { createAuthMiddleware } from 'better-auth/api'
+import { magicLink } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 
 export const auth = betterAuth({
@@ -26,11 +35,74 @@ export const auth = betterAuth({
       verification: verificationTable,
     },
   }),
-  plugins: [tanstackStartCookies()],
+  plugins: [
+    localization({ defaultLocale: 'fa-IR', fallbackLocale: 'default' }),
+    magicLink({
+      storeToken: 'hashed',
+      expiresIn: 5 * 60,
+      async sendMagicLink({ email, url }) {
+        if (serverEnv.APP_ENV === 'production') {
+        } else {
+          await writeLogMessage({
+            content: `=== MAGIC LINK ===\n[email] ${email}\n[url]\n${url}\n`,
+          })
+        }
+      },
+    }),
+    tanstackStartCookies(),
+  ],
   advanced: {
     database: { generateId: false },
   },
   rateLimit: {
     enabled: false,
   },
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      const returned = ctx.context.returned as { headers?: Headers } | null
+
+      if (returned) {
+        const location = returned.headers?.get('location')?.toString()
+
+        if (location) {
+          const error = new URL(location, serverEnv.APP_URL).searchParams
+            .get('error')
+            ?.toString()
+
+          if (error) {
+            const message = errorMessage[error as ErrorMessageKey] as
+              string | undefined
+
+            if (message) {
+              await setFlashMessage({ type: 'error', message })
+            }
+
+            return
+          }
+
+          const success = new URL(location, serverEnv.APP_URL).searchParams
+            .get('success')
+            ?.toString()
+
+          if (success) {
+            const message = successMessage[success as SuccessMessageKey] as
+              string | undefined
+
+            if (message) {
+              await setFlashMessage({ type: 'success', message })
+            }
+          }
+        }
+      }
+    }),
+  },
+  verification: {
+    disableCleanup: false,
+    storeInDatabase: false,
+    storeIdentifier: 'hashed',
+  },
+  secondaryStorage: redisStorage({
+    client: getRedisClient(),
+    keyPrefix: 'better-auth:',
+  }),
 })
