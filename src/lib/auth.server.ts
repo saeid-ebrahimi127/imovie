@@ -8,6 +8,10 @@ import {
 import { serverEnv } from '#/lib/env/env.server.ts'
 import type { ErrorMessageKey, SuccessMessageKey } from '#/lib/message.ts'
 import { errorMessage, successMessage } from '#/lib/message.ts'
+import {
+  createRateLimiter,
+  handleBetterAuthRateLimiting,
+} from '#/lib/rate-limiter.server.ts'
 import { getRedisClient } from '#/lib/redis.server.ts'
 import { setFlashMessage } from '#/lib/session.server.ts'
 import { writeLogMessage } from '#/lib/utils.server.ts'
@@ -18,6 +22,15 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { createAuthMiddleware } from 'better-auth/api'
 import { magicLink } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
+
+const signInViaMagicLinkRateLimiter = createRateLimiter({
+  duration: 60,
+  points: 5,
+})
+const verifyMagicLinkRateLimiter = createRateLimiter({
+  duration: 60,
+  points: 5,
+})
 
 export const auth = betterAuth({
   appName: serverEnv.APP_NAME,
@@ -58,6 +71,42 @@ export const auth = betterAuth({
     enabled: false,
   },
   hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      const { request, path } = ctx
+
+      if (request) {
+        if (path === '/sign-in/magic-link') {
+          await handleBetterAuthRateLimiting(
+            signInViaMagicLinkRateLimiter,
+            path,
+            request,
+          )
+        }
+
+        if (path === '/magic-link/verify') {
+          const result = await handleBetterAuthRateLimiting(
+            verifyMagicLinkRateLimiter,
+            path,
+            request,
+            false,
+          )
+
+          if (result?.errorMessage) {
+            await setFlashMessage({
+              type: 'error',
+              message: result.errorMessage,
+            })
+
+            return new Response(undefined, {
+              headers: {
+                location: new URL('/auth', serverEnv.APP_URL).toString(),
+              },
+              status: 307,
+            })
+          }
+        }
+      }
+    }),
     after: createAuthMiddleware(async (ctx) => {
       const returned = ctx.context.returned as { headers?: Headers } | null
 
