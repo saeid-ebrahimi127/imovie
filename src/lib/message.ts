@@ -24,6 +24,7 @@ export const successMessage = {
   newUser: 'ثبت نام انجام شد. خوش آمدید.',
   loggedIn: 'شما وارد شدید.',
   loggedOut: 'شما خارج شدید.',
+  changesSaved: 'تغییرات ذخیره شد.',
 }
 
 export type SuccessMessageKey = keyof typeof successMessage

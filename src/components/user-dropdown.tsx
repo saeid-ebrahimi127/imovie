@@ -44,7 +44,7 @@ export const UserDropdown = ({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link to="/">
+            <Link to="/my-dashboard">
               <UserIcon />
               پیشخوان من
             </Link>

@@ -73,7 +73,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <TooltipProvider>
             <ThemeProvider defaultTheme="system" storageKey="theme">
               <Header />
-              <main>{children}</main>
+              <main className="p-8">{children}</main>
             </ThemeProvider>
           </TooltipProvider>
           <Toaster

@@ -32,6 +32,10 @@ const verifyMagicLinkRateLimiter = createRateLimiter({
   duration: 60,
   points: 5,
 })
+const updateUserRateLimiter = createRateLimiter({
+  duration: 60,
+  points: 5,
+})
 
 export const auth = betterAuth({
   appName: serverEnv.APP_NAME,
@@ -112,6 +116,14 @@ export const auth = betterAuth({
               status: 307,
             })
           }
+        }
+
+        if (path === '/update-user') {
+          await handleBetterAuthRateLimiting(
+            updateUserRateLimiter,
+            path,
+            request,
+          )
         }
       }
     }),
