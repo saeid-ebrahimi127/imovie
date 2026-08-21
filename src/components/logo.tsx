@@ -5,7 +5,7 @@ import { FilmIcon } from 'lucide-react'
 export const Logo = () => {
   return (
     <Link to="/" className="flex items-center gap-2">
-      <FilmIcon className="text-primary size-5" />
+      <FilmIcon className="text-primary size-5 dark:text-orange-600" />
       <span className="text-base font-medium">{appName()}</span>
     </Link>
   )
