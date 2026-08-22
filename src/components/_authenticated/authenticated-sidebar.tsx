@@ -49,6 +49,13 @@ export const AuthenticatedSidebar = () => {
                     className="pr-6"
                   />
                 </li>
+                <li>
+                  <SidebarMenuItemLink
+                    to="/my-dashboard/account/avatar"
+                    text="عکس کاربری"
+                    className="pr-6"
+                  />
+                </li>
               </ul>
             </SidebarMenuItemCollapsible>
           </li>

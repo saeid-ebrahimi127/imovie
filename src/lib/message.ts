@@ -5,6 +5,8 @@ export const errorMessage = {
   INVALID_TOKEN: 'توکن نامعتبر است. دوباره درخواست توکن کنید.',
   TOKEN_EXPIRED: 'توکن منقضی شده است. دوباره درخواست توکن کنید.',
   generic: 'خطایی رخ داده است. دوباره تلاش کنید.',
+  sessionInvalidOrExpired:
+    'نشست نامعتبر بوده یا منقضی شده است. لطفا مجددا وارد شوید.',
 }
 
 export type ErrorMessageKey = keyof typeof errorMessage
@@ -25,6 +27,7 @@ export const successMessage = {
   loggedIn: 'شما وارد شدید.',
   loggedOut: 'شما خارج شدید.',
   changesSaved: 'تغییرات ذخیره شد.',
+  yourAvatarSaved: 'عکس کاربری شما ذخیره شد.',
 }
 
 export type SuccessMessageKey = keyof typeof successMessage

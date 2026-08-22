@@ -3,7 +3,7 @@ import { userTable, verificationTable } from '#/db/schema/auth-schema.server.ts'
 import type { UserInsert } from '#/db/schema/types.ts'
 import { serverEnv } from '#/lib/env/env.server.ts'
 import { devClearAppRedisCache } from '#/lib/redis.server.ts'
-import { devWipeLogMessages } from '#/lib/utils.server.ts'
+import { devWipeLogMessages, devWipeUploads } from '#/lib/utils.server.ts'
 
 if (serverEnv.APP_ENV === 'production') {
   console.error("you can't run seed in production.")
@@ -13,6 +13,10 @@ if (serverEnv.APP_ENV === 'production') {
 
 try {
   await devClearAppRedisCache()
+
+  console.log('wipe uploads...')
+  await devWipeUploads()
+  console.log('uploads wiped.')
 
   console.log('wipe log messages...')
   await devWipeLogMessages()
