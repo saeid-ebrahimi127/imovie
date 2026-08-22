@@ -11,11 +11,11 @@ import {
   TooltipTrigger,
 } from '#/components/ui/tooltip.tsx'
 import { cn } from '#/lib/utils.ts'
-import { Link } from '@tanstack/react-router'
 import type { NavigateOptions } from '@tanstack/react-router'
-import { ChevronLeftIcon, ChevronUpIcon, PanelRightIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
+import { ChevronLeftIcon, PanelRightIcon } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 
 export const ToggleSidebarBtn = ({
   openSidebar,
@@ -158,10 +158,10 @@ export const SidebarMenuItemCollapsible = ({
             {icon}
             <span>{text}</span>
           </span>
-          <ChevronUpIcon
+          <ChevronLeftIcon
             className={cn(
               'transition-transform duration-300',
-              open ? 'rotate-180' : null,
+              open ? '-rotate-90' : null,
             )}
           />
         </SidebarMenuItemBtn>
