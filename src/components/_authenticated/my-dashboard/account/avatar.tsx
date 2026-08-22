@@ -6,7 +6,12 @@ import { errorMessage, successMessage } from '#/lib/message.ts'
 import { avatarZodSchema } from '#/zod-schema/image.ts'
 import { useRouteContext, useRouter } from '@tanstack/react-router'
 import axios, { AxiosError } from 'axios'
-import { ImageIcon, UploadCloudIcon, XCircleIcon } from 'lucide-react'
+import {
+  ImageIcon,
+  Trash2Icon,
+  UploadCloudIcon,
+  XCircleIcon,
+} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -65,6 +70,11 @@ export const MyDashboardAccountAvatar = () => {
       }
 
       if (action === 'delete') {
+        setIsPending(true)
+
+        await axios.delete('/api/avatar')
+
+        toast.success(successMessage.yourAvatarDeleted)
       }
 
       router.invalidate({
@@ -142,6 +152,21 @@ export const MyDashboardAccountAvatar = () => {
               </span>
             </LoadingSwapBtn>
           </div>
+        )}
+        {image && (
+          <LoadingSwapBtn
+            type="button"
+            disabled={isPending}
+            variant={'destructive'}
+            onClick={async () => {
+              await uploadOrDeleteAvatar('delete')
+            }}
+          >
+            <span className="flex items-center gap-1.5">
+              <Trash2Icon />
+              حذف عکس کاربری
+            </span>
+          </LoadingSwapBtn>
         )}
       </div>
       <input

@@ -60,6 +60,27 @@ export const Route = createFileRoute('/api/avatar')({
             }
           },
         },
+        DELETE: {
+          middleware: [requireAuthMiddlewareApi],
+          async handler({ context: { currentUser } }) {
+            try {
+              if (currentUser.image) {
+                await auth.api.updateUser({
+                  body: {
+                    image: null,
+                  },
+                  headers: getRequestHeaders(),
+                })
+
+                await deleteImage(currentUser.image)
+              }
+
+              return new Response(undefined, { status: 204 })
+            } catch {
+              return Response.json({}, { status: 500 })
+            }
+          },
+        },
       })
     },
   },

@@ -28,6 +28,7 @@ export const successMessage = {
   loggedOut: 'شما خارج شدید.',
   changesSaved: 'تغییرات ذخیره شد.',
   yourAvatarSaved: 'عکس کاربری شما ذخیره شد.',
+  yourAvatarDeleted: 'عکس کاربری شما حذف شد.',
 }
 
 export type SuccessMessageKey = keyof typeof successMessage
