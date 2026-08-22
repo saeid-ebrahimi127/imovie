@@ -1,3 +1,4 @@
+import { AuthenticatedSidebar } from '#/components/_authenticated/authenticated-sidebar.tsx'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -12,7 +13,10 @@ export const Route = createFileRoute('/_authenticated')({
 function RouteComponent() {
   return (
     <div className="mx-auto max-w-360">
-      <Outlet />
+      <AuthenticatedSidebar />
+      <div className="mt-4">
+        <Outlet />
+      </div>
     </div>
   )
 }

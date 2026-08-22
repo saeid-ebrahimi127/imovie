@@ -14,7 +14,7 @@ export const CustomCard = ({
 }: {
   title?: ReactNode
   description?: ReactNode
-  children: ReactNode
+  children?: ReactNode
 }) => {
   return (
     <Card>
@@ -24,7 +24,7 @@ export const CustomCard = ({
           {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
       )}
-      <CardContent>{children}</CardContent>
+      {children && <CardContent>{children}</CardContent>}
     </Card>
   )
 }
