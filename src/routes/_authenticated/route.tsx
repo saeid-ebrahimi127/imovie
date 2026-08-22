@@ -1,4 +1,5 @@
 import { AuthenticatedSidebar } from '#/components/_authenticated/authenticated-sidebar.tsx'
+import { RoutePendingComponent } from '#/components/route-pending-component.tsx'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({
@@ -7,6 +8,14 @@ export const Route = createFileRoute('/_authenticated')({
     if (!user) throw redirect({ to: '/auth', replace: true })
 
     return { currentUser: user }
+  },
+  ssr: 'data-only',
+  pendingComponent() {
+    return (
+      <div className="my-16">
+        <RoutePendingComponent />
+      </div>
+    )
   },
 })
 
