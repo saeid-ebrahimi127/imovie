@@ -1,4 +1,6 @@
+import { CustomAlertDialog } from '#/components/custom-alert-dialog.tsx'
 import { LoadingSwapBtn } from '#/components/loading-swap-btn.tsx'
+import { AlertDialogTrigger } from '#/components/ui/alert-dialog.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { UserAvatar } from '#/components/user-avatar.tsx'
 import { useAxiosErrorHandling } from '#/hooks/use-axios-error-handling.ts'
@@ -154,19 +156,23 @@ export const MyDashboardAccountAvatar = () => {
           </div>
         )}
         {image && (
-          <LoadingSwapBtn
-            type="button"
-            disabled={isPending}
-            variant={'destructive'}
-            onClick={async () => {
+          <CustomAlertDialog
+            trigger={
+              <AlertDialogTrigger asChild>
+                <Button type="button" variant={'destructive'}>
+                  <Trash2Icon />
+                  حذف عکس کاربری
+                </Button>
+              </AlertDialogTrigger>
+            }
+            action={async () => {
               await uploadOrDeleteAvatar('delete')
             }}
-          >
-            <span className="flex items-center gap-1.5">
-              <Trash2Icon />
-              حذف عکس کاربری
-            </span>
-          </LoadingSwapBtn>
+            isPending={isPending}
+            actionPendingText="در حال حذف..."
+            actionText="بله"
+            description="آیا مطمئن هستید می خواهید عکس کاربری خود را حذف کنید؟"
+          />
         )}
       </div>
       <input
