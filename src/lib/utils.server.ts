@@ -1,10 +1,10 @@
 import { serverEnv } from '#/lib/env/env.server.ts'
 import { nanoid } from 'nanoid'
-import { appendFile, mkdir, rm, writeFile } from 'node:fs/promises'
+import { appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { isIP } from 'node:net'
 import { resolve } from 'node:path'
-import sharp from 'sharp'
 import type { SharpInput } from 'sharp'
+import sharp from 'sharp'
 
 const logDirPath = resolve(process.cwd(), 'log')
 const appLogFilePath = resolve(logDirPath, 'app.log')
@@ -96,6 +96,10 @@ export const deleteImage = async (path: string) => {
       })
     }
   }
+}
+
+export const getImage = (fileName: string) => {
+  return readFile(resolve(imagesDirPath, fileName))
 }
 
 export const devWipeUploads = async () => {

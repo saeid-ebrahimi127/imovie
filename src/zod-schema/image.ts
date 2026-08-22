@@ -25,3 +25,7 @@ export const createImageZodSchema = (
 }
 
 export const avatarZodSchema = createImageZodSchema()
+
+export const imageFileNameZodSchema = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]+\.webp$/, 'Must be a nanoid-based .webp filename')
