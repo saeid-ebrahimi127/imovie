@@ -56,6 +56,13 @@ export const AuthenticatedSidebar = () => {
                     className="pr-6"
                   />
                 </li>
+                <li>
+                  <SidebarMenuItemLink
+                    to="/my-dashboard/account/delete-my-account"
+                    text="حذف حساب کاربری من"
+                    className="pr-6"
+                  />
+                </li>
               </ul>
             </SidebarMenuItemCollapsible>
           </li>

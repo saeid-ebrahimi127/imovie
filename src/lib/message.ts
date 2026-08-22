@@ -7,6 +7,7 @@ export const errorMessage = {
   generic: 'خطایی رخ داده است. دوباره تلاش کنید.',
   sessionInvalidOrExpired:
     'نشست نامعتبر بوده یا منقضی شده است. لطفا مجددا وارد شوید.',
+  failedDeletingYourAccount: 'خطا در حذف حساب کاربری شما! دوباره تلاش کنید.',
 }
 
 export type ErrorMessageKey = keyof typeof errorMessage
@@ -29,6 +30,7 @@ export const successMessage = {
   changesSaved: 'تغییرات ذخیره شد.',
   yourAvatarSaved: 'عکس کاربری شما ذخیره شد.',
   yourAvatarDeleted: 'عکس کاربری شما حذف شد.',
+  yourAccountDeleted: 'حساب کاربری شما حذف شد.',
 }
 
 export type SuccessMessageKey = keyof typeof successMessage
