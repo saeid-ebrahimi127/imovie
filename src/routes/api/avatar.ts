@@ -1,19 +1,36 @@
 import { auth } from '#/lib/auth.server.ts'
 import { serverEnv } from '#/lib/env/env.server.ts'
 import { deleteImage, resizeImage, storeImage } from '#/lib/utils.server.ts'
+import { createRateLimitingMiddleware } from '#/middleware/rate-limiting.ts'
 import { requireAuthMiddlewareApi } from '#/middleware/require-auth.ts'
 import { avatarZodSchema } from '#/zod-schema/image.ts'
 import { createFileRoute } from '@tanstack/react-router'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { z } from 'zod'
 
+const avatarRateLimitingMiddleware = createRateLimitingMiddleware({
+  key: 'avatar',
+  points: 5,
+  duration: 60,
+})
+
 export const Route = createFileRoute('/api/avatar')({
   server: {
     handlers({ createHandlers }) {
       return createHandlers({
         POST: {
-          middleware: [requireAuthMiddlewareApi],
-          async handler({ request, context: { currentUser } }) {
+          middleware: [requireAuthMiddlewareApi, avatarRateLimitingMiddleware],
+          async handler({
+            request,
+            context: { currentUser, rateLimitingErrorMessage },
+          }) {
+            if (rateLimitingErrorMessage) {
+              return Response.json(
+                { errorMessage: rateLimitingErrorMessage },
+                { status: 429 },
+              )
+            }
+
             try {
               const formData = await request.formData()
 
@@ -61,8 +78,17 @@ export const Route = createFileRoute('/api/avatar')({
           },
         },
         DELETE: {
-          middleware: [requireAuthMiddlewareApi],
-          async handler({ context: { currentUser } }) {
+          middleware: [requireAuthMiddlewareApi, avatarRateLimitingMiddleware],
+          async handler({
+            context: { currentUser, rateLimitingErrorMessage },
+          }) {
+            if (rateLimitingErrorMessage) {
+              return Response.json(
+                { errorMessage: rateLimitingErrorMessage },
+                { status: 429 },
+              )
+            }
+
             try {
               if (currentUser.image) {
                 await auth.api.updateUser({
